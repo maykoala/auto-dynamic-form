@@ -1,0 +1,39 @@
+{
+  "name": "auto-dynamic-form",
+  "version": "1.0.3",
+  "description": "An Automatic Dynamic Form for React",
+  "main": "lib/Form.js",
+  "scripts": {
+    "start": "webpack-dev-server --config ./webpack.config.js --progress",
+    "build": "webpack --config ./webpack.config.js --progress"
+  },
+  "keywords": [
+    "react",
+    "auto",
+    "dynamic",
+    "form",
+    "antd"
+  ],
+  "author": "Cao WanQiong",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/maykoala/auto-dynamic-form.git"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.6.4",
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
+    "@babel/plugin-transform-arrow-functions": "^7.2.0",
+    "@babel/preset-env": "^7.6.3",
+    "@babel/preset-react": "^7.6.3",
+    "antd": "^3.24.2",
+    "babel-loader": "^8.0.6",
+    "babel-plugin-import": "^1.12.2",
+    "css-loader": "^3.2.0",
+    "react": "^16.11.0",
+    "react-dom": "^16.11.0",
+    "style-loader": "^1.0.0",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10"
+  }
+}
