@@ -1,7 +1,5 @@
-import _ from "lodash";
+import { assign, isEmpty, has, every, each, intersection } from "lodash-es";
 import moment from "moment";
-
-const DEFAULT_EMPTY_VALUE = "";
 
 export const utils = {
   getDisplayedFields,
@@ -29,37 +27,7 @@ export const utils = {
 };
 
 function findByName(list, name) {
-  return _.find(list, function(l) {
-    return l.name == name;
-  });
-}
-
-function selectValuesToDisplay(value, valueEnums) {
-  // 单选 value是string, 需返回obj
-  // 多选value是array, 需返回array
-  if (value == null) return value;
-
-  if (_.isArray(value)) {
-    // 多选
-    return _.map(value, curV => {
-      let targetVE = _.find(valueEnums, curVE => curVE.value === curV);
-      return { value: curV, label: targetVE.label };
-    });
-  } else {
-    let targetVE = _.find(valueEnums, curVE => curVE.value === value);
-
-    return { value, label: targetVE.label };
-  }
-}
-
-function selectDisplayToValues(options, valueEnums) {
-  if (options == null) return options;
-
-  if (_.isArray(options)) {
-    return _.map(options, curO => curO.value);
-  } else {
-    return options.value;
-  }
+  return list.find(l =>  l.name == name);
 }
 
 function getComposedParams(params, changedFields, init) {
@@ -67,38 +35,40 @@ function getComposedParams(params, changedFields, init) {
 
   let fields = changedFields;
   if (init) {
-    _.each(Object.entries(changedFields), ([name, value]) => {
+    each(Object.entries(changedFields), ([name, value]) => {
       fields[name] = { name, value };
     });
   }
 
-  _.each(fields, (props, name) => {
-    let targetParam = findByName(params, name);
+  each(fields, (props, name) => {
+    const targetParam = findByName(params, name);
     if (targetParam != null) {
-      _.assign(targetParam, props);
+      assign(targetParam, props);
     }
   });
 }
 
 function $inOp(value, $inArray) {
-  if (_.isEmpty(value)) return false;
-  if (_.isArray(value)) {
-    return _.every(value, val => $inArray.indexOf(val) >= 0);
+  if (isEmpty(value)) return false;
+  if (Array.isArray(value)) {
+    return every(value, val => $inArray.indexOf(val) >= 0);
   } else {
     return $inArray.indexOf(value) >= 0;
   }
 }
 
 function $orOp(value, $orArray) {
-  if (_.isEmpty(value)) return false;
-  if (_.isArray(value)) {
-    return _.intersection(value, $orArray).length > 0;
+  if (isEmpty(value)) return false;
+  if (Array.isArray(value)) {
+    return intersection(value, $orArray).length > 0;
   } else {
     return $orArray.indexOf(value) >= 0;
   }
 }
 function requiresInParams(requires, parameters, displayedParams) {
-  return _.every(requires, function(req, key) {
+  if (requires == null)
+    return true;
+  return every(requires, (req, key) => {
     let param = null;
     if (req === "$nonExist") {
       param = findByName(displayedParams, key);
@@ -109,18 +79,17 @@ function requiresInParams(requires, parameters, displayedParams) {
     }
 
     param = findByName(parameters, key);
-    if (param == null)
-      return false;
+    if (param == null) return false;
 
     const { value } = param;
 
     if (req === "$nonEmpty") {
-      return value != null && !_.isEmpty(value);
-    } else if (_.has(req, "$in")) {
+      return value != null && !isEmpty(value);
+    } else if (has(req, "$in")) {
       return $inOp(value, req["$in"]);
-    } else if (_.has(req, "$contain")) {
+    } else if (has(req, "$contain")) {
       return $inOp(req["$contain"], value);
-    } else if (_.has(req, "$or")) {
+    } else if (has(req, "$or")) {
       return $orOp(value, req["$or"]);
     }
 
@@ -223,7 +192,7 @@ function getDisplayedFields(params, changedFields, init = false) {
 
   let displayedParams = [];
 
-  _.each(params, param => {
+  each(params, param => {
     if (requiresInParams(param.requires, params, displayedParams)) {
       let { defaultValue, type, valueEnums, value } = param;
 
@@ -246,7 +215,7 @@ function getDisplayedFields(params, changedFields, init = false) {
         defaultValue = param.defaultPickerValue;
       }
 
-      if (!_.has(param, "value")) {
+      if (!has(param, "value")) {
         if (defaultValue != null) {
           param.value = defaultValue;
         }
@@ -265,13 +234,13 @@ function getDisplayedFields(params, changedFields, init = false) {
         ) {
           param.value = moment(param.value, moment.HTML5_FMT.DATETIME_LOCAL_MS);
         } else if (_isDateRange) {
-          param.value = _.map(param.value, val =>
+          param.value = param.value.map(val =>
             moment(val, moment.HTML5_FMT.DATETIME_LOCAL_MS)
           );
         }
       }
 
-      const hasStyle = _.has(param, "style");
+      const hasStyle = has(param, "style");
       if (_isDateRange) {
         param.format = param.format || "YYYY-MM-DD HH:mm";
         if (param.showTime) {

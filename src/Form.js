@@ -1,5 +1,5 @@
 import React from "react";
-import _ from "lodash";
+import { cloneDeep } from "lodash-es";
 import { utils } from "./utils";
 import { EnhancedForm } from "./EnhancedForm";
 
@@ -8,7 +8,7 @@ export class Form extends React.Component {
     super(props);
 
     const { fields, values } = this.props;
-    const originalFields = _.cloneDeep(fields);
+    const originalFields = cloneDeep(fields);
     const changedFields = utils.getDisplayedFields(
       originalFields,
       values,

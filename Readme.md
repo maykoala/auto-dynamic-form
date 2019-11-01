@@ -2,9 +2,7 @@
 
   Build dynamic forms automatically in React with **requires** only.
 
-
   Speed up your multi-form projects.
-
 
 <br>
 
@@ -20,7 +18,7 @@ This project is only just begining. Welcome to support it together with me!
 ## Get Started
 
 ### Auto
-Auto-dynamic-form receives an array of objects as the structure, an object as the key-value pairs that you retrieve from DB mostly, and a onSubmit handler including two params error and values of the current form. 
+Auto-dynamic-form receives an array of objects as the structure, an object as the key-value pairs that you retrieve from DB mostly, and an onSubmit handler including two params error and values of the current form. 
 
 ### Dynamic
 The keyword **requires** is used here to define dependencies between elements. If one element A requires the other one B, which means we could see A only when B meets the requirement. Now we support requirement keywords: $in, $or, $exist, $nonExist, $nonEmpty.
@@ -29,7 +27,7 @@ The keyword **requires** is used here to define dependencies between elements. I
 Auto-dynamic-form uses [Ant Design](https://ant.design) as the basic UI, which means you can customize elements mostly the same as in [Ant Design](https://ant.design). For example, you can set the element to different types: text, number, password, textarea, date (which means datepicker), switch, radio and so on.
 
 
-
+### Demo
 ```javascript
 import React from "react";
 import { Form } from "auto-dynamic-form";

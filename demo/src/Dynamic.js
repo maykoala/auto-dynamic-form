@@ -223,7 +223,7 @@ const Fields = [
     type: "switch",
     requires: {
       favoriteColors: {
-        $or: ["red", "blue", "green"]
+        $or: ["red", "blue", "green", "yellow"]
       }
     }
   }

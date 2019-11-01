@@ -1,7 +1,7 @@
 import React from 'react';
-import { utils } from './utils';
 import { Form, Button  } from 'antd';
 import { Field } from './Field';
+import {each, omit, pickBy} from 'lodash-es';
 
 class CustomizedForm extends React.Component {
     render() {
@@ -14,10 +14,10 @@ class CustomizedForm extends React.Component {
 
         return (
         <Form {...formItemLayout} onSubmit={(e) => onSubmit(validateFields, e)}>
-            {_.map(fields, field => (
+            {fields.map(field => (
                 <Field
                     key={field.name}
-                    param={_.omit(field, ['touched', 'dirty', 'validating'])}
+                    param={omit(field, ['touched', 'dirty', 'validating'])}
                     getFieldDecorator = {getFieldDecorator}
                 />)
             )}
@@ -32,13 +32,13 @@ class CustomizedForm extends React.Component {
 
 export const EnhancedForm = Form.create({
     onFieldsChange(props, changedFields) {
-        const successFields = _.pickBy(changedFields, field => field.error === undefined);
+        const successFields = pickBy(changedFields, field => field.error === undefined);
         props.onChange(successFields);
     },
 
     mapPropsToFields(props) { // need to more convention
         const formFields = {};
-        _.each(props.fields, field => {
+        each(props.fields, field => {
             formFields[field.name] = Form.createFormField({
                 ...field
             })
