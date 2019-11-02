@@ -1,6 +1,6 @@
 {
   "name": "auto-dynamic-form",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "An Automatic Dynamic Form for React",
   "main": "lib/Form.js",
   "scripts": {
