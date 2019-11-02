@@ -29,7 +29,7 @@ Auto-dynamic-form uses [Ant Design](https://ant.design) as the basic UI, which m
 
 ### Demo
 
-![Demo Image](https://github.com/maykoala/auto-dynamic-form/blob/master/assets/images/demo.gif)
+![Demo Image](assets/images/demo.gif)
 ```javascript
 import React from "react";
 import { Form } from "auto-dynamic-form";
