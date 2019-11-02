@@ -2,12 +2,12 @@
 
   Build dynamic forms automatically in React with **Data** only.
 
-  Speed up your multi-form projects:rocket:.
+  Speed up your multi-form projects :rocket:.
 
 <br>
 
 ## Note
-This project is only just begining:writing_hand:. :clap:Welcome to support it together with me:raised_hand_with_fingers_splayed:!
+This project is only just begining :writing_hand:. More features are coming soon :zap:. Welcome :clap: to support it together with me :raised_hand_with_fingers_splayed:!
 
 <br>
 
@@ -29,7 +29,7 @@ Auto-dynamic-form uses [Ant Design](https://ant.design) as the basic UI, which m
 
 ### Demo
 
-![Demo Image](https://github.com/maykoala/auto-dynamic-form/raw/master/assets/images/demo.gif)
+![Demo Image](https://rawcdn.githack.com/maykoala/auto-dynamic-form/master/assets/images/demo.gif)
 ```javascript
 import React from "react";
 import { Form } from "auto-dynamic-form";
