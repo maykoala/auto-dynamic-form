@@ -1,5 +1,14 @@
 .npmignore
 webpack.*
-package-lock.json
 demo
 src
+
+node_modules
+*.log
+coverage
+.DS_Store
+.vscode
+*.orig
+yarn.lock
+package-lock.json
+stats.html
