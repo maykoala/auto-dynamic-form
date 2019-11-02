@@ -1,7 +1,5 @@
 .npmignore
 webpack.*
-demo
-src
 
 node_modules
 *.log
@@ -12,3 +10,7 @@ coverage
 yarn.lock
 package-lock.json
 stats.html
+
+demo
+src
+asset
