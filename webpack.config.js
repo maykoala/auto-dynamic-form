@@ -10,8 +10,7 @@ const config = {
   externals: {
     "antd": "antd",
     "moment": "moment",
-    "react": "react",
-    "react-dom": "react-dom"
+    "react": "react"
   },
   mode: "production",
   plugins: [
