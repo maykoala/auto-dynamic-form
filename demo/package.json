@@ -6,8 +6,9 @@
     "start": "webpack-dev-server --config ./webpack.config.js --progress"
   },
   "dependencies": {
+    "antd": "^3.24.3",
     "react": "^16.11.0",
-    "react-dom": "^16.9.0"
+    "react-dom": "^16.11.0"
   },
   "devDependencies": {
     "@babel/core": "^7.5.5",
@@ -15,7 +16,6 @@
     "@babel/plugin-transform-arrow-functions": "^7.2.0",
     "@babel/preset-env": "^7.5.5",
     "@babel/preset-react": "^7.0.0",
-    "antd": "^3.22.2",
     "auto-dynamic-form": "^1.0.3",
     "babel-loader": "^8.0.6",
     "babel-plugin-import": "^1.12.1",

@@ -112,9 +112,6 @@ const Fieldset = ({ label, type = "text", ...restInit }) => {
 export class Field extends React.Component {
   render() {
     const { param, getFieldDecorator } = this.props;
-
-
-    
     if (utils.isDivider(param)) {
       return <hr />;
     } else if (utils.isTitle(param)) {

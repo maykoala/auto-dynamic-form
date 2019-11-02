@@ -7,3 +7,4 @@ coverage
 *.orig
 yarn.lock
 package-lock.json
+stats.html
