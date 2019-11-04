@@ -29,7 +29,7 @@ It is a handler with a param **form**. You can get values, do validations via it
 You can config form's layout, wrapperCol, labelCol, and colon here.
 
 ### Dynamic
-The keyword **requires** is used here to define dependencies between elements. If one element A requires the other one B, which means we could see A only when B meets the requirement. Now we support requirement keywords: $in, $or, $exist, $nonExist, $nonEmpty.
+The keyword **requires** is used to define dependencies between elements. If one element A requires the other one B, which means we could see A only when B meets the requirement. Now we support requirement keywords: $in, $or, $exist, $nonExist, $nonEmpty.
 
 ### Easyyyy
 Auto-dynamic-form uses [Ant Design](https://ant.design) as the basic UI, that's to say you can customize elements almost the same as in [Ant Design](https://ant.design). For example, you can set an element to different types: text, number, password, textarea, date (standing for datepicker), switch, radio and so on.

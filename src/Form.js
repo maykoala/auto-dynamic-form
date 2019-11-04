@@ -8,7 +8,7 @@ export class Form extends React.Component {
     this.state = utils.getInitialFields(this.props);
   }
 
-  handleChange = changedFields => {
+  handleChangedFields = changedFields => {
     const { originalFields } = this.state;
     this.setState({
       changedFields: utils.getDisplayedFields(originalFields, changedFields)
@@ -40,15 +40,13 @@ export class Form extends React.Component {
     const { changedFields } = this.state;
     const { children } = this.props;
 
-    const {
-      config = {}
-    } = this.props;
+    const { config = {} } = this.props;
 
     return (
       <EnhancedForm
         fields={changedFields}
         config={config}
-        onChange={this.handleChange}
+        onChangedFields={this.handleChangedFields}
         onSubmit={this.handleSubmit}
         resetFields={this.resetFields}
         children={children}

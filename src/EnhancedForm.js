@@ -19,6 +19,7 @@ class CustomizedForm extends React.Component {
 
     const { labelCol = {} } = form;
     let buttonLayout = {};
+
     if (!isEmpty(labelCol)) {
       const { offset = 0, span = 0 } = labelCol;
       buttonLayout = { wrapperCol: { offset: offset + span } };
@@ -55,15 +56,10 @@ class CustomizedForm extends React.Component {
 
 export const EnhancedForm = Form.create({
   onFieldsChange(props, changedFields) {
-    const successFields = pickBy(
-      changedFields,
-      field => field.error === undefined
-    );
-    props.onChange(successFields);
+    props.onChangedFields(changedFields);
   },
 
   mapPropsToFields({ fields }) {
-    // need to more convention
     const formFields = {};
     each(fields, field => {
       formFields[field.name] = Form.createFormField({
