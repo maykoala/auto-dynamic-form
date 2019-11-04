@@ -3,10 +3,7 @@ import { utils } from "./utils";
 import { EnhancedForm } from "./EnhancedForm";
 
 export class Form extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = utils.getInitialFields(this.props);
-  }
+  state = utils.getInitialFields(this.props);
 
   handleChangedFields = changedFields => {
     const { originalFields } = this.state;
@@ -38,18 +35,16 @@ export class Form extends React.Component {
 
   render() {
     const { changedFields } = this.state;
-    const { children } = this.props;
-
-    const { config = {} } = this.props;
+    const { config = {}, children } = this.props;
 
     return (
       <EnhancedForm
         fields={changedFields}
         config={config}
+        children={children}
         onChangedFields={this.handleChangedFields}
         onSubmit={this.handleSubmit}
         resetFields={this.resetFields}
-        children={children}
       />
     );
   }
