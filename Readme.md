@@ -24,7 +24,7 @@ It is an array of object. Each object has "name", "label", "type" and the other 
 #### values
 It is an optional object. Each object is a name-value pair. Mostly it's the value getting from DB. You don't need to set it if no values at start.
 #### onSubmit
-It is a handler with a param **form**. You can get values, do validations here via it.
+It is a handler with a param **form**. You can get values, do validations via it.
 #### config
 You can config form's layout, wrapperCol, labelCol, and colon here.
 
@@ -37,7 +37,7 @@ Auto-dynamic-form uses [Ant Design](https://ant.design) as the basic UI, that's 
 
 ### Demo
 
-![Demo Image](https://rawcdn.githack.com/maykoala/auto-dynamic-form/master/assets/images/newDemo.gif)
+![Demo Image](https://raw.githack.com/maykoala/auto-dynamic-form/master/assets/images/demo.gif)
 ```javascript
 import React from "react";
 import { Form } from "auto-dynamic-form";
