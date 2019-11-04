@@ -57,23 +57,32 @@ const Fields = [
 const Values = {
   "multiple-select": "orange"
 };
+
+const Config = {
+  form: {
+    labelCol: { span: 6 },
+    wrapperCol: { span: 14 },
+  }
+};
+
 export class Selects extends React.Component {
-  onSubmit = (error, values) => {
-    if (!error) {
-      console.log(`Received values of form: ${JSON.stringify(values)}`);
-    } else {
-      console.log(`error: ${error}`);
-    }
-  };
+  handleSubmit = ({ validateFields }) => {
+    validateFields((error, values) => {
+      if (!error) {
+        console.log(`Received values of form: ${JSON.stringify(values)}`);
+      } else {
+        console.log(`error: ${JSON.stringify(error)}`);
+      }
+    });
+  }
 
   render() {
     return (
       <div>
         <h2 style={{ textAlign: "center", margin: "40px 0" }}>
-          {" "}
-          Different Kinds Of Selects{" "}
+          Different Kinds Of Selects
         </h2>
-        <Form fields={Fields} values={Values} onSubmit={this.onSubmit} />
+        <Form fields={Fields} values={Values} onSubmit={this.handleSubmit} config={Config}/>
       </div>
     );
   }

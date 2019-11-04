@@ -1,49 +1,57 @@
 import React from "react";
-import { cloneDeep } from "lodash-es";
 import { utils } from "./utils";
 import { EnhancedForm } from "./EnhancedForm";
 
 export class Form extends React.Component {
   constructor(props) {
     super(props);
-
-    const { fields, values } = this.props;
-    const originalFields = cloneDeep(fields);
-    const changedFields = utils.getDisplayedFields(
-      originalFields,
-      values,
-      true
-    );
-
-    this.state = { originalFields, changedFields };
-
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.state = utils.getInitialFields(this.props);
   }
 
-  handleChange(changedFields) {
+  handleChange = changedFields => {
     const { originalFields } = this.state;
     this.setState({
       changedFields: utils.getDisplayedFields(originalFields, changedFields)
     });
-  }
+  };
 
-  handleSubmit(validateFields, event) {
+  handleSubmit = (form, event) => {
     event.preventDefault();
-    const { onSubmit } = this.props;
-    validateFields((error, values) => {
-      onSubmit(error, values);
-    });
-  }
+    this.props.onSubmit(form);
+  };
+
+  resetFields = names => {
+    if (names == null || names.length === 0) {
+      this.setState(utils.getInitialFields(this.props));
+    } else {
+      const { originalFields } = this.state;
+      originalFields.forEach(field => {
+        if (names.includes(field.name)) {
+          field.value = undefined;
+        }
+      });
+      this.setState({
+        changedFields: utils.getDisplayedFields(originalFields)
+      });
+    }
+  };
 
   render() {
     const { changedFields } = this.state;
+    const { children } = this.props;
+
+    const {
+      config = {}
+    } = this.props;
 
     return (
       <EnhancedForm
         fields={changedFields}
+        config={config}
         onChange={this.handleChange}
         onSubmit={this.handleSubmit}
+        resetFields={this.resetFields}
+        children={children}
       />
     );
   }

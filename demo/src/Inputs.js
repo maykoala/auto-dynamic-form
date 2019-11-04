@@ -43,9 +43,17 @@ const Fields = [
     type: "number",
     label: "Number",
     placeholder: "Please input number",
-    min: 1,
-    max: 10,
-    defaultValue: 3
+    defaultValue: 3,
+    rules: [
+      {
+        validator: async (rule, value) => {
+          if (value < 1) throw new Error("The number couldn't be less than 1");
+          else if (value > 10)
+            throw new Error("The number couldn't be greater than 10");
+        }
+      },
+      { type: "number" }
+    ]
   },
   {
     name: "disabled-number-example",
@@ -122,23 +130,37 @@ const Values = {
   "text-example": "I'm a basic input.",
   "number-example": 5
 };
+
+const Config = {
+  form: {
+    labelCol: { span: 6 },
+    wrapperCol: { span: 14 }
+  }
+};
+
 export class Inputs extends React.Component {
-  onSubmit = (error, values) => {
-    if (!error) {
-      console.log(`Received values of form: ${JSON.stringify(values)}`);
-    } else {
-      console.log(`error: ${error}`);
-    }
+  handleSubmit = ({ validateFields }) => {
+    validateFields((error, values) => {
+      if (!error) {
+        console.log(`Received values of form: ${JSON.stringify(values)}`);
+      } else {
+        console.log(`error: ${JSON.stringify(error)}`);
+      }
+    });
   };
 
   render() {
     return (
       <div>
         <h2 style={{ textAlign: "center", margin: "40px 0" }}>
-          {" "}
-          Different Kinds Of Inputs{" "}
+          Different Kinds Of Inputs
         </h2>
-        <Form fields={Fields} values={Values} onSubmit={this.onSubmit} />
+        <Form
+          fields={Fields}
+          values={Values}
+          onSubmit={this.handleSubmit}
+          config={Config}
+        />
       </div>
     );
   }

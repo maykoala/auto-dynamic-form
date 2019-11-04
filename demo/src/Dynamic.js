@@ -1,5 +1,6 @@
 import React from "react";
 import { Form } from "../../src";
+import { Row, Col, Button } from "antd";
 
 const Fields = [
   {
@@ -229,13 +230,26 @@ const Fields = [
   }
 ];
 
+const Config = {
+  form: {
+    labelCol: { span: 6 },
+    wrapperCol: { span: 14 },
+  }
+};
+
 export class Dynamic extends React.Component {
-  onSubmit = (error, values) => {
-    if (!error) {
-      console.log(`Received values of form: ${JSON.stringify(values)}`);
-    } else {
-      console.log(`error: ${error}`);
-    }
+  handleSubmit = ({ validateFields }) => {
+    validateFields((error, values) => {
+      if (!error) {
+        console.log(`Received values of form: ${JSON.stringify(values)}`);
+      } else {
+        console.log(`error: ${JSON.stringify(error)}`);
+      }
+    });
+  }
+
+  handleReset = ({resetFields}) => {
+    resetFields();
   };
 
   render() {
@@ -244,7 +258,25 @@ export class Dynamic extends React.Component {
         <h2 style={{ textAlign: "center", margin: "40px 0" }}>
           Different Kinds Of Dynamic
         </h2>
-        <Form fields={Fields} onSubmit={this.onSubmit} />
+        <Form fields={Fields} config={Config} onSubmit={this.handleSubmit}>
+          {form => {
+            return (
+              <Row>
+                <Col offset={6} span={14}>
+                  <Button type="primary" htmlType="submit">
+                    Submit
+                  </Button>
+                  <Button
+                    style={{ marginLeft: 8 }}
+                    onClick={this.handleReset.bind(this, form)}
+                  >
+                    Reset
+                  </Button>
+                </Col>
+              </Row>
+            );
+          }}
+        </Form>
       </div>
     );
   }

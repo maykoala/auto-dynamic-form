@@ -1,13 +1,13 @@
 # auto-dynamic-form
 
-  Build dynamic forms automatically in React with **Data** only.
+  Build dynamic forms automatically in React with **data** only.
 
   Speed up your multi-form projects :rocket:.
 
 <br>
 
 ## Note
-This project is only just begining :writing_hand:. More features are coming soon :zap:. Welcome :clap: to support it together with me :raised_hand_with_fingers_splayed:!
+This project is only just begining :writing_hand:. More features are coming soon :zap:.
 
 <br>
 
@@ -18,21 +18,30 @@ This project is only just begining :writing_hand:. More features are coming soon
 ## Get Started
 
 ### Auto
-Auto-dynamic-form receives an array of objects as the structure, an object as the key-value pairs that you retrieve from DB mostly, and a handler of onSumbit including two params: error and values respectively of the current form. 
+Auto-dynamic-form receives some props to define a form: fields, values, onSubmit, and config. 
+#### fields
+It is an array of object. Each object has "name", "label", "type" and the other properties.
+#### values
+It is an optional object. Each object is a name-value pair. Mostly it's the value getting from DB. You don't need to set it if no values at start.
+#### onSubmit
+It is a handler with a param **form**. You can get values, do validations here via it.
+#### config
+You can config form's layout, wrapperCol, labelCol, and colon here.
 
 ### Dynamic
 The keyword **requires** is used here to define dependencies between elements. If one element A requires the other one B, which means we could see A only when B meets the requirement. Now we support requirement keywords: $in, $or, $exist, $nonExist, $nonEmpty.
 
-### Easssssy
-Auto-dynamic-form uses [Ant Design](https://ant.design) as the basic UI, which means you can customize elements almost the same as in [Ant Design](https://ant.design). For example, you can set an element to different types: text, number, password, textarea, date (which means datepicker), switch, radio and so on.
+### Easyyyy
+Auto-dynamic-form uses [Ant Design](https://ant.design) as the basic UI, that's to say you can customize elements almost the same as in [Ant Design](https://ant.design). For example, you can set an element to different types: text, number, password, textarea, date (standing for datepicker), switch, radio and so on.
 
 
 ### Demo
 
-![Demo Image](https://rawcdn.githack.com/maykoala/auto-dynamic-form/master/assets/images/demo.gif)
+![Demo Image](https://rawcdn.githack.com/maykoala/auto-dynamic-form/master/assets/images/newDemo.gif)
 ```javascript
 import React from "react";
 import { Form } from "auto-dynamic-form";
+import { Row, Col, Button } from "antd";
 
 const Fields = [
   {
@@ -262,13 +271,26 @@ const Fields = [
   }
 ];
 
+const Config = {
+  form: {
+    labelCol: { span: 6 },
+    wrapperCol: { span: 14 },
+  }
+};
+
 export class Dynamic extends React.Component {
-  onSubmit = (error, values) => {
-    if (!error) {
-      console.log(`Received values of form: ${JSON.stringify(values)}`);
-    } else {
-      console.log(`error: ${error}`);
-    }
+  handleSubmit = ({ validateFields }) => {
+    validateFields((error, values) => {
+      if (!error) {
+        console.log(`Received values of form: ${JSON.stringify(values)}`);
+      } else {
+        console.log(`error: ${JSON.stringify(error)}`);
+      }
+    });
+  }
+
+  handleReset = ({resetFields}) => {
+    resetFields();
   };
 
   render() {
@@ -277,10 +299,29 @@ export class Dynamic extends React.Component {
         <h2 style={{ textAlign: "center", margin: "40px 0" }}>
           Different Kinds Of Dynamic
         </h2>
-        <Form fields={Fields} onSubmit={this.onSubmit} />
+        <Form fields={Fields} config={Config} onSubmit={this.handleSubmit}>
+          {form => {
+            return (
+              <Row>
+                <Col offset={6} span={14}>
+                  <Button type="primary" htmlType="submit">
+                    Submit
+                  </Button>
+                  <Button
+                    style={{ marginLeft: 8 }}
+                    onClick={this.handleReset.bind(this, form)}
+                  >
+                    Reset
+                  </Button>
+                </Col>
+              </Row>
+            );
+          }}
+        </Form>
       </div>
     );
   }
 }
+
 
 ```

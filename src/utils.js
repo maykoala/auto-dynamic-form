@@ -1,7 +1,16 @@
-import { assign, isEmpty, has, every, each, intersection } from "lodash-es";
+import {
+  assign,
+  cloneDeep,
+  isEmpty,
+  has,
+  every,
+  each,
+  intersection
+} from "lodash-es";
 import moment from "moment";
 
 export const utils = {
+  getInitialFields,
   getDisplayedFields,
   isText,
   isNumber,
@@ -26,8 +35,14 @@ export const utils = {
   isPassword
 };
 
+function getInitialFields({ fields, values }) {
+  const originalFields = cloneDeep(fields);
+  const changedFields = utils.getDisplayedFields(originalFields, values, true);
+  return { originalFields, changedFields };
+};
+
 function findByName(list, name) {
-  return list.find(l =>  l.name == name);
+  return list.find(l => l.name == name);
 }
 
 function getComposedParams(params, changedFields, init) {
@@ -66,8 +81,7 @@ function $orOp(value, $orArray) {
   }
 }
 function requiresInParams(requires, parameters, displayedParams) {
-  if (requires == null)
-    return true;
+  if (requires == null) return true;
   return every(requires, (req, key) => {
     let param = null;
     if (req === "$nonExist") {

@@ -39,23 +39,31 @@ const Fields = [
   }
 ];
 
+const Config = {
+  form: {
+    labelCol: { span: 6 },
+    wrapperCol: { span: 14 },
+  }
+};
+
 export class Checkboxes extends React.Component {
-  onSubmit = (error, values) => {
-    if (!error) {
-      console.log(`Received values of form: ${JSON.stringify(values)}`);
-    } else {
-      console.log(`error: ${error}`);
-    }
+  handleSubmit = ({ validateFields }) => {
+    validateFields((error, values) => {
+      if (!error) {
+        console.log(`Received values of form: ${JSON.stringify(values)}`);
+      } else {
+        console.log(`error: ${JSON.stringify(error)}`);
+      }
+    });
   };
 
   render() {
     return (
       <div>
         <h2 style={{ textAlign: "center", margin: "40px 0" }}>
-          {" "}
-          Different Kinds Of Checkboxes{" "}
+          Different Kinds Of Checkboxes
         </h2>
-        <Form fields={Fields} onSubmit={this.onSubmit} />
+        <Form fields={Fields} onSubmit={this.handleSubmit}  config={Config}/>
       </div>
     );
   }
