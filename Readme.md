@@ -22,7 +22,7 @@ Auto-dynamic-form receives some props to define a form: fields, values, onSubmit
 #### fields
 It is an array of object. Each object has "name", "label", "type" and the other properties.
 #### values
-It is an optional object. Each object is a name-value pair. Mostly it's the value getting from DB. You don't need to set it if no values at start.
+It is an optional object. Mostly it's getting from DB. You don't need to set it if no values at start.
 #### onSubmit
 It is a handler with a param **form**. You can get values, do validations via it.
 #### config
