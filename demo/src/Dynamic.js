@@ -6,7 +6,7 @@ const Fields = [
   {
     name: "basic-requires-section",
     type: "title",
-    text: "Basic Dynamic Section: requires, $nonEmpty"
+    text: "Basic Dynamic Section: requires, $nonEmpty",
   },
   {
     name: "fixedDate",
@@ -227,15 +227,26 @@ const Fields = [
         $intersectWith: ["red", "blue", "green", "yellow"]
       }
     }
+  },
+  {
+    name: "cuteAnimals",
+    label: "Cute Animals",
+    type: "loop",
+    // loopedType: "textarea"
+    // defaultValue: ['cat', 'dog']
   }
 ];
 
 const Config = {
   form: {
     labelCol: { span: 6 },
-    wrapperCol: { span: 14 },
+    wrapperCol: { span: 14 }
   }
 };
+
+const Values = {
+  cuteAnimals: ['cat', 'dog']
+}
 
 export class Dynamic extends React.Component {
   handleSubmit = ({ validateFields }) => {
@@ -246,9 +257,9 @@ export class Dynamic extends React.Component {
         console.log(`error: ${JSON.stringify(error)}`);
       }
     });
-  }
+  };
 
-  handleReset = ({resetFields}) => {
+  handleReset = ({ resetFields }) => {
     resetFields();
   };
 
@@ -258,7 +269,10 @@ export class Dynamic extends React.Component {
         <h2 style={{ textAlign: "center", margin: "40px 0" }}>
           Different Kinds Of Dynamic
         </h2>
-        <Form fields={Fields} config={Config} onSubmit={this.handleSubmit}>
+        <Form fields={Fields}           
+          values={Values}
+          config={Config} 
+          onSubmit={this.handleSubmit}>
           {form => {
             return (
               <Row>

@@ -3,6 +3,7 @@ import { Form, Button } from "antd";
 import { Field } from "./Field";
 import { each, omit, pickBy } from "lodash-es";
 import { isEmpty } from "lodash-es";
+import { utils } from "./utils";
 
 class CustomizedForm extends React.Component {
 
@@ -12,17 +13,39 @@ class CustomizedForm extends React.Component {
     const formProps = this.props.form;
 
     formProps.resetFields = resetFields;
+    const originalValidateFields = formProps.validateFields;
+    formProps.validateFields = callback => {
+      originalValidateFields((error, values) => {
+        const keysFields = [];
+        each(values, (val, key) => {
+          const targetField = utils.findByName(fields, key);
+          if (targetField != null && utils.isKey(targetField)) {
+            keysFields.push(targetField);
+          }
+        });
 
-    const { getFieldDecorator } = formProps;
+        each(keysFields, ({name, source, value}) => {
+          const result = [];
+          each(value, val => {
+            const loopedFieldName = utils.getLoopedFieldName(source, val);
+            result.push(values[loopedFieldName]);
+            delete values[loopedFieldName];
+          });
+          delete values[name];
+          values[source] = result;
+        });
+        return callback(error, values)
+      });
+    };
 
     const { form = {}} = config;
 
-    const { labelCol = {} } = form;
-    let buttonLayout = {};
+    const { labelCol = {}, wrapperCol = {} } = form;
+    let formItemLayoutWithOutLabel = {};
 
     if (!isEmpty(labelCol)) {
       const { offset = 0, span = 0 } = labelCol;
-      buttonLayout = { wrapperCol: { offset: offset + span } };
+      formItemLayoutWithOutLabel = { wrapperCol: { offset: offset + span, span: wrapperCol.span }};
     }
 
     return (
@@ -31,7 +54,9 @@ class CustomizedForm extends React.Component {
           <Field
             key={field.name}
             param={omit(field, ["touched", "dirty", "validating"])}
-            getFieldDecorator={getFieldDecorator}
+            form={formProps}
+            formItemLayoutWithOutLabel={formItemLayoutWithOutLabel}
+            formItemLayout={form}
           />
         ))}
         {children ? (
@@ -41,7 +66,7 @@ class CustomizedForm extends React.Component {
             childen
           )
         ) : (
-          <Form.Item {...buttonLayout}>
+          <Form.Item {...formItemLayoutWithOutLabel}>
             <Button type="primary" htmlType="submit">
               Submit
             </Button>

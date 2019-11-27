@@ -5,13 +5,17 @@ import {
   has,
   every,
   each,
-  intersection
+  intersection,
+  omitBy
 } from "lodash-es";
 import moment from "moment";
 
 export const utils = {
   getInitialFields,
   getDisplayedFields,
+  getKeysFieldName,
+  getLoopedFieldName,
+  findByName,
   isText,
   isNumber,
   isTextArea,
@@ -32,52 +36,100 @@ export const utils = {
   isLabel,
   isTitle,
   isDivider,
-  isPassword
+  isPassword,
+  isLoop,
+  isKey
 };
 
+function getKeysFieldName(name) {
+  return `${name}Keys`;
+}
+
+function getLoopedFieldName(name, key) {
+  return name + "~" + "Field" + "~" + key;
+}
+
 function getInitialFields({ fields, values }) {
-  const originalFields = cloneDeep(fields);
+  let originalFields = cloneDeep(fields);
+
+  const keysFields = [];
+  each(originalFields, field => {
+    if (isLoop(field)) {
+      const { name, keys } = field;
+      keysFields.push({
+        name: getKeysFieldName(name),
+        type: "key",
+        defaultValue: keys || [],
+        requires: { [name]: "$exist" },
+        source: name
+      });
+    }
+  });
+
+  originalFields = originalFields.concat(keysFields);
+
   const changedFields = utils.getDisplayedFields(originalFields, values, true);
+
   return { originalFields, changedFields };
-};
+}
 
 function findByName(list, name) {
   return list.find(l => l.name == name);
 }
 
-function getComposedParams(params, changedFields, init) {
+function getComposedParams(fields, changedFields, init) {
   if (changedFields == null) return;
 
-  let fields = changedFields;
   if (init) {
     each(Object.entries(changedFields), ([name, value]) => {
-      fields[name] = { name, value };
+      changedFields[name] = { name, value };
     });
   }
 
-  each(fields, (props, name) => {
-    const targetParam = findByName(params, name);
-    if (targetParam != null) {
-      assign(targetParam, props);
+  each(changedFields, (props, name) => {
+    const targetField = findByName(fields, name);
+    if (targetField != null) {
+      assign(targetField, props);
+      if (!init) {
+        if (isKey(targetField)) {
+          const sourceField = findByName(fields, targetField.source);
+          if (sourceField != null) {
+            sourceField.keys = targetField.value;
+          }
+          sourceField.value = omitBy(
+            sourceField.value,
+            (val, key) => !sourceField.keys.includes(+key)
+          );
+        }
+      }
+    } else {
+      const parts = name.split("~");
+      if (parts.length === 3 && parts[1] === "Field") {
+        // Created Dynamically For Loop
+        const sourceField = findByName(fields, parts[0]);
+        const value = sourceField.value || {};
+        value[parts[2]] = props.value;
+        sourceField.value = value;
+      }
     }
   });
 }
 
-function $inOp(value, $inArray) {
+function $subsetOf(value, $set) {
   if (isEmpty(value)) return false;
   if (Array.isArray(value)) {
-    return every(value, val => $inArray.indexOf(val) >= 0);
+    return every(value, val => $set.indexOf(val) >= 0);
   } else {
-    return $inArray.indexOf(value) >= 0;
+    return $set.indexOf(value) >= 0;
   }
 }
 
-function $orOp(value, $orArray) {
+function $intersectWith(value, $set) {
   if (isEmpty(value)) return false;
   if (Array.isArray(value)) {
-    return intersection(value, $orArray).length > 0;
+    return intersection(value, $set).length > 0;
   } else {
-    return $orArray.indexOf(value) >= 0;
+    return $set.indexOf(value) >= 0;
   }
 }
 function requiresInParams(requires, parameters, displayedParams) {
@@ -99,12 +151,12 @@ function requiresInParams(requires, parameters, displayedParams) {
 
     if (req === "$nonEmpty") {
       return value != null && !isEmpty(value);
-    } else if (has(req, "$in")) {
-      return $inOp(value, req["$in"]);
+    } else if (has(req, "$subsetOf")) {
+      return $subsetOf(value, req["$subsetOf"]);
     } else if (has(req, "$contain")) {
-      return $inOp(req["$contain"], value);
-    } else if (has(req, "$or")) {
-      return $orOp(value, req["$or"]);
+      return $subsetOf(req["$contain"], value);
+    } else if (has(req, "$intersectWith")) {
+      return $intersectWith(value, req["$intersectWith"]);
     }
 
     return req === value;
@@ -201,6 +253,18 @@ function isDivider(param) {
   return param.type === "divider";
 }
 
+function isLoop(param) {
+  return param.type === "loop";
+}
+
+function isKey(param) {
+  return param.type === "key";
+}
+
+function getKeysFromArray(value) {
+  return value.map((val, index) => index);
+}
+
 function getDisplayedFields(params, changedFields, init = false) {
   getComposedParams(params, changedFields, init);
 
@@ -208,25 +272,21 @@ function getDisplayedFields(params, changedFields, init = false) {
 
   each(params, param => {
     if (requiresInParams(param.requires, params, displayedParams)) {
-      let { defaultValue, type, valueEnums, value } = param;
+      let { name, defaultValue } = param;
 
-      if (
-        (isCheckbox(param) || isRadio(param || isSwitch(param))) &&
-        defaultValue == null
-      ) {
-        defaultValue = param.defaultChecked;
-      }
-
-      if (
-        (isDate(param) ||
+      if (defaultValue == null) {
+        if (isCheckbox(param) || isRadio(param || isSwitch(param))) {
+          defaultValue = param.defaultChecked;
+        } else if (
+          isDate(param) ||
           isTime(param) ||
           isDateTime(param) ||
           isWeek(param) ||
           isMonth(param) ||
-          isDateRange(param)) &&
-        defaultValue == null
-      ) {
-        defaultValue = param.defaultPickerValue;
+          isDateRange(param)
+        ) {
+          defaultValue = param.defaultPickerValue;
+        }
       }
 
       if (!has(param, "value")) {
@@ -251,6 +311,16 @@ function getDisplayedFields(params, changedFields, init = false) {
           param.value = param.value.map(val =>
             moment(val, moment.HTML5_FMT.DATETIME_LOCAL_MS)
           );
+        } else if (isLoop(param)) {
+          if (init) {
+            // Convert Array Value to Object
+            param.keys = getKeysFromArray(param.value);
+            param.value = Object.assign({}, param.value);
+
+            const keysFieldName = getKeysFieldName(name);
+            const keysField = findByName(params, keysFieldName);
+            keysField.value = param.keys;
+          }
         }
       }
 
