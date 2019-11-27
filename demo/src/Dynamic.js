@@ -101,8 +101,8 @@ const Fields = [
     }
   },
   {
-    name: "advanced-requires-section-in",
-    text: "Advanced Requires Section: $in",
+    name: "advanced-requires-section-subsetOf",
+    text: "Advanced Requires Section: $subsetOf",
     type: "title"
   },
   {
@@ -145,7 +145,7 @@ const Fields = [
     type: "switch",
     requires: {
       favoriteActivities: {
-        $in: ["guitar", "violino", "cello"]
+        $subsetOf: ["guitar", "violino", "cello"]
       }
     }
   },
@@ -155,7 +155,7 @@ const Fields = [
     type: "switch",
     requires: {
       favoriteActivities: {
-        $in: ["football", "basketball", "swim"]
+        $subsetOf: ["football", "basketball", "swim"]
       }
     }
   },
@@ -170,8 +170,8 @@ const Fields = [
     }
   },
   {
-    name: "advanced-requires-section-or",
-    text: "Advanced Requires Section: $or",
+    name: "advanced-requires-section-intersect-with",
+    text: "Advanced Requires Section: $intersectWith",
     type: "title"
   },
   {
@@ -214,7 +214,7 @@ const Fields = [
     type: "switch",
     requires: {
       favoriteColors: {
-        $or: ["black", "white"]
+        $intersectWith: ["black", "white"]
       }
     }
   },
@@ -224,7 +224,7 @@ const Fields = [
     type: "switch",
     requires: {
       favoriteColors: {
-        $or: ["red", "blue", "green", "yellow"]
+        $intersectWith: ["red", "blue", "green", "yellow"]
       }
     }
   }
